@@ -6,11 +6,22 @@
 
 body {
     display: flex;
-    justify-content: center;
-    align-items: center;
 }
-#stockCanvas {
-    border-style: solid;
 
+#tradingGraphPanel {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
 }
+
+#tradingGraphPanel div {
+    display: flex;
+    flex-wrap: nowrap;
+    flex: 1;
+    gap: 10px;
+}
+canvas {
+    border-style: solid;
+}
+
 
