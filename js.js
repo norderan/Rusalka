@@ -11,9 +11,6 @@ drawStock(createStockGraph(trend, volatility));
 //This funcation returns an array of stock coordinates.
 //volatility - How "hard" the graph goes up and down. 1 --- 10.
 //trend - is and how many does the graph goes up or down. 0 - 1
-
-
-
 function createStockGraph (trend, volatility) {
     let tips = 100;
     const coordinatesArray = [];
@@ -59,3 +56,20 @@ function drawStock(coordinatesArray) {
 }
 
 
+//terminal:
+
+let terminalInput;
+const commandHistory = document.getElementById("commandHistory");
+const terminalInputElement = document.getElementById("terminalInput");
+terminalInputElement.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+        terminalInput = terminalInputElement.value;
+        console.log('terminal command: '+ terminalInput);
+        let newCommand = document.createElement("p");
+        newCommand.textContent = terminalInput;
+        newCommand.classList.add("command");
+        commandHistory.appendChild(newCommand);
+        terminalInputElement.value = '';
+        commandHistory.scrollTop = commandHistory.scrollHeight;
+    }
+});

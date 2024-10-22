@@ -4,24 +4,56 @@
     padding: 0;
 }
 
+html, body {
+    position: fixed;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
 body {
     display: flex;
-}
-
-#tradingGraphPanel {
-    display: flex;
     flex-direction: column;
-    margin: 10px;
+    align-content: flex-end;
 }
 
-#tradingGraphPanel div {
+
+#tradingGraphPanel div{
     display: flex;
-    flex-wrap: nowrap;
+    flex-direction: row;
     flex: 1;
-    gap: 10px;
 }
+
 canvas {
     border-style: solid;
 }
 
+#tradingGraphAndNewsDiv {
+    display: flex;
+    flex-direction: row;
+}
 
+#terminalAndAboutDiv {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+/* panels */
+#terminalPanel {
+    display: flex;
+    flex: 1;
+    flex-direction: column-reverse;
+    background-color: lightblue; 
+    height: 400px;
+}
+
+#commandHistory {
+    display: flex;
+    overflow-y: scroll;
+    flex-direction: column;
+}
+#tradingGraphPanel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}

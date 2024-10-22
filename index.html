@@ -8,11 +8,8 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
-    <div>
-        <div id="terminalPanel">
-    </div>
 
-    <div>
+    <div id="tradingGraphAndNewsDiv">
         <div id="tradingGraphPanel">
             <div>
                 <canvas id="lmCanvas" height="200px" width="400px"></canvas>
@@ -23,14 +20,23 @@
                 <canvas id="stockCanvas" height="200px" width="400px"></canvas>
             </div>
         </div>
+        <div id="newsPanel">
+            <h1>News</h1>
+        </div>
+    </div>
 
-        <div>
-            <div id="newsPanel">
-                <h1>News</h1>
+    
+    <div id="terminalAndAboutDiv">
+        <div id="terminalPanel">
+            <div>
+                <label>user@khanja:~$ </label>
+                <input type="text" id="terminalInput"></input>
             </div>
-            <div id="aboutPanel">
-                <h1>By Yazan Abu Queider</h1>
+            <div id="commandHistory">
             </div>
+        </div>
+        <div id="aboutPanel">
+            <h1>By Yazan Abu Queider</h1>
         </div>
     </div>
 
