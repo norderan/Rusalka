@@ -12,16 +12,31 @@
     <div id="tradingGraphAndNewsDiv">
         <div id="tradingGraphPanel">
             <div>
-                <canvas id="lmCanvas" height="200px" width="400px"></canvas>
-                <canvas id="rtxCanvas" height="200px" width="400px"></canvas>
+                <div>
+                    <p>Lockhead Cooperation</p>
+                    <canvas id="canvas1" height="200px" width="400px"></canvas>
+                </div>
+                <div>
+                    <p>JSC Sukhoi Company (Сухой)</p>
+                    <canvas id="canvas2" height="200px" width="400px"></canvas>
+                </div>
             </div>
             <div>
-                <canvas id="ngCanvas" height="200px" width="400px"></canvas>
-                <canvas id="stockCanvas" height="200px" width="400px"></canvas>
+                <div>
+                    <p>General Dynamics</p>
+                    <canvas id="canvas3" height="200px" width="400px"></canvas>
+                </div>
+                <div>
+                    <p>Izhevsk Machinebuilding Plant</p>
+                    <canvas id="canvas4" height="200px" width="400px"></canvas>
+                </div>
             </div>
         </div>
         <div id="newsPanel">
             <h1>News</h1>
+            <div id="newsPanelHistory">
+                <h1 id="newsHeadline"></h1>
+            </div>
         </div>
     </div>
 
@@ -37,6 +52,7 @@
         </div>
         <div id="aboutPanel">
             <h1>By Yazan Abu Queider</h1>
+            <h1 id="dayCounter"></h1>
         </div>
     </div>
 

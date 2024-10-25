@@ -17,13 +17,21 @@ body {
     align-content: flex-end;
 }
 
-
+#tradingGraphPanel{
+    display: flex;
+    flex-direction: column;
+}
 #tradingGraphPanel div{
     display: flex;
     flex-direction: row;
     flex: 1;
 }
 
+#tradingGraphPanel div div{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
 canvas {
     border-style: solid;
 }
@@ -52,8 +60,16 @@ canvas {
     overflow-y: scroll;
     flex-direction: column;
 }
+
+#newsPanel  {
+    background-color: lightcoral;
+}
+
+
+
 #tradingGraphPanel {
     display: flex;
     flex-direction: column;
     flex: 1;
 }
+
