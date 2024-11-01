@@ -8,13 +8,17 @@ let priceCanvas1 = 1000;
 let userCredits = 1000;
 let command;
 
-const PRECENTAGE_DIVIDOR_FACTOR = 0.2;
+const PRECENTAGE_DIVIDOR_FACTOR = 0.1;
 
-
-
+let stockArray1;
+let stockArray1Correct;
 /*
-
-
+Tasks: 
+    - create a news funciton
+    - Add tp and sl.
+    - Add other graphs.
+    - Add correction for the command.
+    
 
 */
 dayLoop();
@@ -30,112 +34,188 @@ function dayLoop(){
     dayCounterElement.textContent = "Day " + (dayCounter + 1);
     news = "mig32 test fail above kazakhi lands";
     const newsHeadline = document.getElementById("newsHeadline");
-    newsHeadline.textContent = news;
-    stockArray1 = createStockArray(0.7, 0.05);
-    drawStock(stockArray1, true);
+    newsHeadline.textContent = news;     
+    let stockObject = createStockArray(0.70, 0.07);
+    stockArray1 = stockObject.coordinatesArray
+    stockArray1Correct = stockObject.coordinatesArrayCorrect;
+    drawThe500lines(stockArray1, priceCanvas1);
+    drawStock(stockArray1Correct, true);
 
 }
 
 
 
 
-//terminal:
-let terminalInput;
-const commandHistory = document.getElementById("commandHistory");
+//terminal input:
 const terminalInputElement = document.getElementById("terminalInput");
 terminalInputElement.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
-        terminalInput = terminalInputElement.value;
-        terminalInterpreter(terminalInput);
+        addMessageToTerminal(terminalInputElement.value)
+        terminalInterpreter(terminalInputElement.value);
         console.log('terminal command: '+ terminalInput);
-        let newCommand = document.createElement("p");
-        newCommand.textContent = terminalInput;
-        newCommand.classList.add("command");
-        commandHistory.appendChild(newCommand);
         terminalInputElement.value = '';
-        commandHistory.scrollTop = commandHistory.scrollHeight;
     }
 });
 
+//Adds a message to command history.
+const commandHistory = document.getElementById("commandHistory");
+function addMessageToTerminal(message){
+    let newCommand = document.createElement("p");
+    newCommand.textContent = message;
+    newCommand.classList.add("command");
+    commandHistory.appendChild(newCommand);
+    commandHistory.scrollTop = commandHistory.scrollHeight;
+}
+
+
+// trade LM long 500 -sl 1500 -tp 1700
 // Interpretes terminal commands
 function terminalInterpreter (commandString) {
     let commandArray = commandString.split(" ");
     if(commandArray[0] == "trade"){
+        let longOrshort = commandArray[2];
+        let amount = commandArray[3];
         let isLong;
-        if (commandArray[1] == "long") {
-            isLong = true;
+        let stopLoss;
+        let takeProfit;
+        let stopLossPixels;
+        if(!/^[0-9]+$/.test(amount)){
+            addMessageToTerminal("[-] Amount not valid.")
+        } else if (amount > userCredits){
+            addMessageToTerminal("[-] Not enough credits.")
+        } else if (amount <= 0){
+            addMessageToTerminal("[-] Amount not valid.")
+        } else if (longOrshort != "long" && longOrshort != "short") {
+            addMessageToTerminal("[-] Long or short not specified on a position");
+        } else if (commandArray[5] && !/^[0-9]+$/.test(commandArray[5]) || commandArray[7] && !/^[0-9]+$/.test(commandArray[7])){
+            addMessageToTerminal("[-] Stop loss or take profit amount are not valid.");
         } else {
-            isLong = false;
+
+            for (let i = 4; i < commandArray.length; i++) {
+                if (commandArray[i] === "-sl" && commandArray[i + 1]) {
+                    stopLoss = commandArray[i + 1];
+
+
+
+                    //stopLossPixelsOld = Math.round((stockArray1[25].y * stopLoss) / priceCanvas1);
+                    stopLossPixels = Math.round(stockArray1[25].y * ((((stopLoss / priceCanvas1) -1 ) / PRECENTAGE_DIVIDOR_FACTOR ) + 1));
+                    
+                } 
+                if (commandArray[i] === "-tp" && commandArray[i + 1]) {
+                    takeProfit = commandArray[i + 1];
+                }
+            }
+            if (longOrshort == "long") {
+                isLong = true;
+            } else if(longOrshort == "short") {
+                isLong = false;
+            } 
+
+            
+            ctx.strokeStyle = "red";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, 200 - stopLossPixels); // Starting point (x, y)
+            ctx.lineTo(400, 200 - stopLossPixels); // Ending point (x, y)
+            ctx.stroke();
+            ctx.strokeStyle = "black";
+
+
+
+            let takeProfitPixels;
+            profit = trade(stockArray1, isLong, amount, stopLossPixels,takeProfitPixels);
+            userCredits = userCredits + profit;
+    
+            drawStock(stockArray1Correct, false);
+            priceCanvas1 = calculateNewPrice(stockArray1, priceCanvas1)
+            console.log("user credits: " + userCredits);
+            console.log("canvas price: " + priceCanvas1);
+            console.log("==================================")
+        
         }
-        profit = trade(stockArray1, isLong, commandArray[2]);
-        userCredits = userCredits + profit;
 
-        drawStock(stockArray1, false);
-        priceCanvas1 = calculateNewPrice(stockArray1, priceCanvas1)
-        console.log("user credits: " + userCredits);
-        console.log("canvas price: " + priceCanvas1);
-        console.log("==================================")
-
-    }
-    if(commandArray[0] == "c") {
+    } else if(commandArray[0] == "c") {
         dayCounter++;
         dayLoop();
+    } else {
+        addMessageToTerminal("[-] Invalid command.")
     }
 }
 
 
 // calculates the trade profits.
-function trade(stockArray, long, amount, takeProfitPixels, stopLossPixels) {
+function trade(stockArray, long, amount, stopLossPixels, takeProfitPixels) {
     let profit;
     let percentage
     userCredits = userCredits - amount; 
     if (takeProfitPixels === undefined && stopLossPixels === undefined) {
         if (long){
-
-            percentage = (stockArray[25].y / stockArray[100].y) * PRECENTAGE_DIVIDOR_FACTOR;
+            percentage = (((stockArray[100].y / stockArray[25].y) -1) * PRECENTAGE_DIVIDOR_FACTOR) + 1;
             profit =  percentage * amount;
         } else {
-            percentage = (stockArray[100].y/ stockArray[25].y) * PRECENTAGE_DIVIDOR_FACTOR;
+            percentage = (stockArray[25].y / stockArray[100].y);
             profit =  percentage * amount;
         }
+
     }else if(takeProfitPixels === undefined){
         for(let i = 26; i < 101; i++){
-            if(stockArray[i].y >= stopLossPixels) {
-
+            if(stockArray[i].y <= stopLossPixels) {
+                console.log("stopLost trigger at:" + stockArray[i].x);
                 if (long){
-                    profit = (stockArray[25].y / stockArray[i].y) * amount;
+                    percentage = (((stockArray[i].y / stockArray[25].y) -1) * PRECENTAGE_DIVIDOR_FACTOR) + 1;
+                    profit =  percentage * amount;
                 } else {
-                    profit = (stockArray[i].y/ stockArray[25].y) * amount;
+                    percentage = stockArray[25].y / stockArray[i].y;
+                    profit =  percentage * amount;
                 }
                 break;
+            } else if (i == 100){
+                if (long){
+                    percentage = (((stockArray[100].y / stockArray[25].y) -1) * PRECENTAGE_DIVIDOR_FACTOR) + 1;
+                    profit =  percentage * amount;
+                } else {
+                    percentage = (stockArray[25].y / stockArray[100].y);
+                    profit =  percentage * amount;
+                }
             }
-        }
-        return profit;
+        } 
+
     } else if (stopLossPixels === undefined){
         for(let i = 26; i < 101; i++){
             if(stockArray[i].y <= takeProfitPixels ) {
                 if (long){
-                    profit = (stockArray[25].y / stockArray[i].y) * amount;
+                    percentage = (((stockArray[25].y / stockArray[i].y) -1 ) * PRECENTAGE_DIVIDOR_FACTOR) + 1;
+                    profit =  percentage * amount;
                 } else {
-                    profit = (stockArray[i].y/ stockArray[25].y) * amount;
+                    percentage = (((stockArray[i].y / stockArray[25].y) -1 ) * PRECENTAGE_DIVIDOR_FACTOR) + 1;
+                    profit =  percentage * amount;
                 }
+                break;
+
             }
         } 
     } else {
         for(let i = 26; i < 101; i++){
             if(stockArray[i].y <= takeProfitPixels || stockArray[i].y >= stopLossPixels) {
                 if (long){
-                    profit = (stockArray[25].y / stockArray[i].y) * amount;
+                    percentage = (stockArray[25].y / stockArray[i].y);
+                    profit =  percentage * amount;
                 } else {
-                    profit = (stockArray[i].y/ stockArray[25].y) * amount;
+                    percentage = (stockArray[i].y / stockArray[25].y);
+                    profit =  percentage * amount;
                 }
+                break;
             }
         } 
     }
+
     console.log("trade for day " + dayCounter + ":");
     console.log("amount: " + amount);
     console.log("profit percentage: " + percentage);
-    console.log("net profit: " + Math.round(profit));
+    console.log("net profit: " + (Math.round(profit) - amount));
+    console.log("stopLoss: " + stopLossPixels)
+    console.log("take profit: " + takeProfitPixels)
+
     return Math.round(profit); 
 }
 
@@ -159,18 +239,33 @@ function createStockArray (trend, volatility) {
             priceChange = (Math.random()* (volatility))+ 1 + volatility;
         }
         let lastPrice = coordinatesArray[i - 1].y;
-        let coordinates = {x: tipsGapCounter, y:lastPrice * priceChange}
+        let coordinates = {x: tipsGapCounter, y:lastPrice + 100*(1 - priceChange)}
         tipsGapCounter = tipsGapCounter + tipsGap;
         coordinatesArray.push(coordinates);
     }
-    return coordinatesArray;
+    let coordinatesArrayCorrect = coordinatesArray.map(element => ({ ...element, y: 200 - element.y }));
+    return {coordinatesArrayCorrect: coordinatesArrayCorrect, coordinatesArray: coordinatesArray};
 }
 
 // calculates a price from the pixel change
 function calculateNewPrice(stockArray, lastPrice) {
-    return Math.round((lastPrice * stockArray[0].y )  / stockArray[stockArray.length - 1].y)
+    //console.log("realPrice: " + (lastPrice * (stockArray[stockArray.length - 1].y  / stockArray[25].y )) );
+    return lastPrice * ((((stockArray[stockArray.length - 1].y  / stockArray[25].y ) -1 ) * PRECENTAGE_DIVIDOR_FACTOR)+ 1);
 }
+function drawThe500lines(stockArray, price) {
 
+    for (let  i = 0; i < 3000;i+= 10) {
+        stopLossPixels =  200 - Math.round(stockArray1[25].y * ((((i / priceCanvas1) -1 ) / PRECENTAGE_DIVIDOR_FACTOR ) + 1));
+        ctx.strokeStyle = "grey";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, 200 - stopLossPixels); // Starting point (x, y)
+        ctx.lineTo(400, 200 - stopLossPixels); // Ending point (x, y)
+        ctx.stroke();
+        ctx.strokeStyle = "black";
+    }
+
+}
 
 // Draws the stock price on a canvas
 function drawStock(coordinatesArray, isHalf) {
@@ -178,6 +273,12 @@ function drawStock(coordinatesArray, isHalf) {
     let endingCoordinatesIndex;
     let startingCoordinatesIndex;
     if(isHalf) {
+        ctx.strokeStyle = "blue";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(100, 0); // Starting point (x, y)
+        ctx.lineTo(100, 200); // Ending point (x, y)
+        ctx.stroke();
         startingCoordinates = coordinatesArray[0];
         endingCoordinatesIndex = 26;
         startingCoordinatesIndex = 0;
@@ -186,20 +287,22 @@ function drawStock(coordinatesArray, isHalf) {
         endingCoordinatesIndex = 101;
         startingCoordinatesIndex = 25;
     }
+    ctx.strokeStyle = "black";
 
-    ctx.moveTo(startingCoordinates.x, startingCoordinates.y);
     ctx.beginPath();  
+    ctx.moveTo(startingCoordinates.x, startingCoordinates.y);
 
-    const delay = 30;  // 100 ms = 0.1 seconds
+    const delay = 30;  
     for (let i = startingCoordinatesIndex; i < endingCoordinatesIndex; i++) {
-        // Use a closure to preserve the current value of i and delay the drawing of each line
         setTimeout(function() {
             const coordinates = coordinatesArray[i];
             ctx.lineTo(coordinates.x, coordinates.y);
             ctx.lineWidth = 5;
             ctx.stroke();
-        }, delay * i); // Multiply delay by 'i' to create increasing delay between lines
+        }, delay * i);
     }
+
+
 }
 
 
