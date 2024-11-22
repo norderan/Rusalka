@@ -1,3 +1,49 @@
+
+
+/*
+LAST THING WORKED ON:
+    - trying to get the div div div situation right.
+*/
+
+const HIGH_2 = 0.65;
+const HIGH_1 = 0.6;
+const HIGH = 0.55;
+const ZERO = 0.5;
+const LOW = 0.45;
+const LOW_1 = 0.4;
+const LOW_2 = 0.35;
+
+
+const newsArray = [
+    //day zero
+    {
+        news: "Lockheed Corporation announced the development of high altitude reconnaissance aircraft Lockheed U-2.",
+        can1Trend: HIGH_1,
+        can2Trend: ZERO,
+        can3Trend: ZERO,
+        can4Trend: LOW,
+    },
+
+    {
+        news: "Test flight of the Lockheed U-2 prototype failed and crushed into the ocean. General Dynamics CEO commented: \"Duo to The U-2 failer we are stopping all collaboration with The Lockheed cooperation.\".",
+        can1Trend: LOW_2,
+        can2Trend: LOW,
+        can3Trend: ZERO,
+        can4Trend: ZERO,
+    },
+
+    {
+        news: "Joseph Stalin, leader of the USSR, has orderd the manufacturing of 10,000 more UZ-10 anti-aircrafts from the Izhevsk Mechanical Plant",
+        can1Trend: ZERO,
+        can2Trend: ZERO,
+        can3Trend: ZERO,
+        can4Trend: HIGH_1,
+    },
+
+]
+        
+    
+
 let dayCounter = 0;
 const dayCounterElement = document.getElementById("dayCounter");
 const stockCanvas1 = document.getElementById("canvas1");
@@ -10,6 +56,34 @@ const ctxCanvas2 = stockCanvas2.getContext("2d");
 const ctxCanvas3 = stockCanvas3.getContext("2d");
 const ctxCanvas4 = stockCanvas4.getContext("2d");
 
+const can1StartPrice = document.getElementById("can1StartPrice");
+const can2StartPrice = document.getElementById("can2StartPrice");
+const can3StartPrice = document.getElementById("can3StartPrice");
+const can4StartPrice = document.getElementById("can4StartPrice");
+
+const can1EndPrice = document.getElementById("can1EndPrice");
+const can2EndPrice = document.getElementById("can2EndPrice");
+const can3EndPrice = document.getElementById("can3EndPrice");
+const can4EndPrice = document.getElementById("can4EndPrice");
+
+const can1Percentage = document.getElementById("can1Percentage");
+const can2Percentage = document.getElementById("can2Percentage");
+const can3Percentage = document.getElementById("can3Percentage");
+const can4Percentage = document.getElementById("can4Percentage");
+
+const userCreditsH1 = document.getElementById("userCredits");
+
+
+const PRECENTAGE_DIVIDOR_FACTOR = 0.1;
+const STOCK_TIPS = 100;
+const STOCK_START_VIEW_INDEX = 10;
+const CANVAS_HEIGHT = 200;
+const CANVAS_WIDTH = 400;
+
+const newsPanelHistory = document.getElementById("newsPanelHistory");
+const terminalInputElement = document.getElementById("terminalInput");
+
+
 
 let news;
 let priceCanvas1 = 1000;
@@ -20,11 +94,6 @@ let priceCanvas4 = 500;
 let userCredits = 1000;
 let command;
 
-const PRECENTAGE_DIVIDOR_FACTOR = 0.1;
-const STOCK_TIPS = 100;
-const STOCK_START_VIEW_INDEX = 10;
-const CANVAS_HEIGHT = 200;
-const CANVAS_WIDTH = 400;
 
 
 let stockArrayCoords1;
@@ -36,15 +105,8 @@ let stockArrayDraw1;
 let stockArrayDraw2;
 let stockArrayDraw3;
 let stockArrayDraw4;
-/*
-Tasks: 
-    - create a news funciton
-    - Add tp and sl.
-    - Add other graphs.
-    - Add correction for the command.
-    
 
-*/
+
 dayLoop();
 
 
@@ -57,36 +119,52 @@ function dayLoop() {
     ctxCanvas2.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctxCanvas3.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctxCanvas4.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    userCreditsH1.textContent = "Credits: " + userCredits;
+
+    //clear end price
+    can1EndPrice.textContent = "-";
+    can2EndPrice.textContent = "-";
+    can3EndPrice.textContent = "-";
+    can4EndPrice.textContent = "-";
+
+    can1Percentage.textContent = "-";
+    can2Percentage.textContent = "-";
+    can3Percentage.textContent = "-";
+    can4Percentage.textContent = "-";
 
     //here is the day loop
     dayCounterElement.textContent = "Day " + (dayCounter + 1);
-    news = "mig32 test fail above kazakhi lands";
-    const newsHeadline = document.getElementById("newsHeadline");
-    newsHeadline.textContent = news;
+    const dayObj = newsArray[dayCounter];
+    addNewsToNewsTerminal(dayObj.news);
 
-    stockArrayCoords1 = createStockArray(0.4, 0.004);
-    stockArrayCoords2 = createStockArray(0.4, 0.004);
-    stockArrayCoords3 = createStockArray(0.4, 0.004);
-    stockArrayCoords4 = createStockArray(0.4, 0.004);
+    console.log(dayObj.news);
+
+    stockArrayCoords1 = createStockArray(dayObj.can1Trend, 0.004);
+    stockArrayCoords2 = createStockArray(dayObj.can2Trend, 0.004);
+    stockArrayCoords3 = createStockArray(dayObj.can3Trend, 0.004);
+    stockArrayCoords4 = createStockArray(dayObj.can4Trend, 0.004);
     
     stockArrayDraw1 = stockArrayCoords1.map(element => CANVAS_HEIGHT - Number(((element * 1000) - 900).toFixed(1)));;
     stockArrayDraw2 = stockArrayCoords2.map(element => CANVAS_HEIGHT - Number(((element * 1000) - 900).toFixed(1)));;
     stockArrayDraw3 = stockArrayCoords3.map(element => CANVAS_HEIGHT - Number(((element * 1000) - 900).toFixed(1)));;
     stockArrayDraw4 = stockArrayCoords4.map(element => CANVAS_HEIGHT - Number(((element * 1000) - 900).toFixed(1)));;
 
-    //drawThe500lines(stockArray1draw, priceCanvas1);
+
+    
     drawStock(stockArrayDraw1, true, ctxCanvas1);
     drawStock(stockArrayDraw2, true, ctxCanvas2); 
     drawStock(stockArrayDraw3, true, ctxCanvas3); 
     drawStock(stockArrayDraw4, true, ctxCanvas4); 
 
+    //put prices
+
+    can1StartPrice.textContent = priceCanvas1;
+    can2StartPrice.textContent = priceCanvas2;
+    can3StartPrice.textContent = priceCanvas3;
+    can4StartPrice.textContent = priceCanvas4;
 }
 
-
-
-
 //terminal input:
-const terminalInputElement = document.getElementById("terminalInput");
 terminalInputElement.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         addMessageToTerminal(terminalInputElement.value)
@@ -96,7 +174,20 @@ terminalInputElement.addEventListener('keydown', (event) => {
     }
 });
 
+
+
 //Adds a message to command history.
+function addNewsToNewsTerminal(message) {
+    let newNews = document.createElement("p");
+    newNews.textContent = message;
+    newNews.classList.add("newsItem");
+    newsPanelHistory.appendChild(newNews);
+    newsPanelHistory.appendChild(document.createElement("br"));
+    newsPanelHistory.scrollTop = newsPanelHistory.scrollHeight;
+}
+
+
+//Add news item to the news terminal
 const commandHistory = document.getElementById("commandHistory");
 function addMessageToTerminal(message) {
     let newCommand = document.createElement("p");
@@ -160,12 +251,12 @@ function terminalInterpreter(commandString) {
                     priceCanvas = priceCanvas1;
                     stockArrayCoords = stockArrayCoords1;
                     break;
-                case "gd":
+                case "su":
                     ctxCanvas = ctxCanvas2;
                     priceCanvas = priceCanvas2;
                     stockArrayCoords = stockArrayCoords2;
                     break;
-                case "su":
+                case "gd":
                     ctxCanvas = ctxCanvas3;
                     priceCanvas = priceCanvas3;
                     stockArrayCoords = stockArrayCoords3;
@@ -200,16 +291,28 @@ function terminalInterpreter(commandString) {
 
             profit = trade(stockArrayCoords, isLong, amount, stopLoss, takeProfit, priceCanvas);
             userCredits = userCredits + profit;
-;
-            drawStock(stockArrayDraw1, false, ctxCanvas1);
-            drawStock(stockArrayDraw2, false, ctxCanvas2); 
-            drawStock(stockArrayDraw3, false, ctxCanvas3); 
-            drawStock(stockArrayDraw4, false, ctxCanvas4); 
+            userCreditsH1.textContent = "Credits: " + userCredits;
 
+            can1Percentage.textContent = "%" + ((calculateNewPrice(stockArrayCoords1, priceCanvas1) - priceCanvas1) / priceCanvas1 * 100).toFixed(1);
+            can2Percentage.textContent = "%" + ((calculateNewPrice(stockArrayCoords2, priceCanvas2) - priceCanvas2) / priceCanvas2 * 100).toFixed(1);
+            can3Percentage.textContent = "%" + ((calculateNewPrice(stockArrayCoords3, priceCanvas3) - priceCanvas3) / priceCanvas3 * 100).toFixed(1);
+            can4Percentage.textContent = "%" + ((calculateNewPrice(stockArrayCoords4, priceCanvas4) - priceCanvas4) / priceCanvas4 * 100).toFixed(1);
+            
+            
             priceCanvas1 = calculateNewPrice(stockArrayCoords1, priceCanvas1);
             priceCanvas2 = calculateNewPrice(stockArrayCoords2, priceCanvas2);
             priceCanvas3 = calculateNewPrice(stockArrayCoords3, priceCanvas3);
             priceCanvas4 = calculateNewPrice(stockArrayCoords4, priceCanvas4);
+
+            can1EndPrice.textContent = priceCanvas1;
+            can2EndPrice.textContent = priceCanvas2;
+            can3EndPrice.textContent = priceCanvas3;
+            can4EndPrice.textContent = priceCanvas4;
+
+            drawStock(stockArrayDraw1, false, ctxCanvas1);
+            drawStock(stockArrayDraw2, false, ctxCanvas2); 
+            drawStock(stockArrayDraw3, false, ctxCanvas3); 
+            drawStock(stockArrayDraw4, false, ctxCanvas4); 
 
             console.log("user credits: " + userCredits);
             console.log("canvas price: " + priceCanvas1);
@@ -356,7 +459,7 @@ function createStockArray(trend, volatility) {
 
 // calculates a price from the pixel change
 function calculateNewPrice(stockArray, lastPrice) {
-    return lastPrice * (stockArray[STOCK_TIPS] / stockArray[STOCK_START_VIEW_INDEX]);
+    return Math.ceil(lastPrice * (stockArray[STOCK_TIPS] / stockArray[STOCK_START_VIEW_INDEX]) * 10) / 10;
 }
 function drawThe500lines(stockArray, price) {
 
@@ -382,7 +485,7 @@ function drawStock(coordinatesArray, isHalf, ctx) {
     let gapCounter = 0
     if (isHalf) {
         startingPixel = 0;
-        ctx.strokeStyle = "blue";
+        ctx.strokeStyle = "orangered";
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(CANVAS_WIDTH / STOCK_START_VIEW_INDEX, 0); // Starting point (x, y)
@@ -397,7 +500,7 @@ function drawStock(coordinatesArray, isHalf, ctx) {
         gapCounter = gap * STOCK_START_VIEW_INDEX;
     }
 
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "orangered";
     ctx.beginPath();
     ctx.moveTo(startingPixel, coordinatesArray[startingIndex]);
 
@@ -415,5 +518,4 @@ function drawStock(coordinatesArray, isHalf, ctx) {
 
 
 }
-
 

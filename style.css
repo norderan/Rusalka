@@ -1,7 +1,29 @@
+
+@font-face {
+    font-family: '8bitOperatorPlusSC-Bold';
+    src: url('fonts/8bitOperatorPlusSC-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'ChixaDemibold';
+    src: url('fonts/ChixaDemibold.ttf') format('truetype');
+}
+
+
+p {    
+    font-weight: 300;
+    font-size: 20px;
+    
+}
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    background-color: black;
+    color: orangered;
+    text-shadow: 0 0 2px orangered, 0 0 10px orangered;
+
+    font-family: '8bitOperatorPlusSC-Bold', 'ChixaDemibold',sans-serif;
 }
 
 html, body {
@@ -12,28 +34,53 @@ html, body {
 }
 
 body {
+
     display: flex;
     flex-direction: column;
     align-content: flex-end;
+    padding: 10px;
+    position: relative;
+    overflow: hidden;
+
 }
 
-#tradingGraphPanel{
-    display: flex;
-    flex-direction: column;
-}
-#tradingGraphPanel div{
-    display: flex;
-    flex-direction: row;
-    flex: 1;
+/* Overlay effect */
+.fuzzy-overlay {
+    position: absolute;
+    inset: -200%;
+    background-image: url("images/noise.png");
+    opacity: 15%;
+    z-index: 10;
+    pointer-events: none;
+    animation: shift 0.2s linear infinite both,  fadeOpacity 5s steps(1, end) infinite;
 }
 
-#tradingGraphPanel div div{
-    display: flex;
-    flex-direction: column;
-    flex: 1;
+@keyframes shift {
+    0% {
+        transform: translateX(10%) translateY(10%);
+    }
+
+    100% {
+        transform: translateX(-10%) translateY(-10%);
+    }
 }
+
+
+@keyframes fadeOpacity {
+    0%, 100% {
+        opacity: 15%;
+    }
+    70% {
+        opacity: 20%;
+    }
+}
+
+
+
+
 canvas {
     border-style: solid;
+    margin: 10px;
 }
 
 #tradingGraphAndNewsDiv {
@@ -51,10 +98,28 @@ canvas {
     display: flex;
     flex: 1;
     flex-direction: column-reverse;
-    background-color: lightblue; 
-    height: 400px;
 }
 
+#terminalPanel div * {
+    font-size: 20px;
+}
+#terminalPanel div input {
+    flex: 1;
+    border: none;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+input:focus {
+    border-color:  orangered;/* Highlighted border color */
+    outline: none; /* Removes the default outline */
+    font-size: 20px;
+}
+
+
+#terminalPanel div {
+    display: flex;
+}
 #commandHistory {
     display: flex;
     overflow-y: scroll;
@@ -62,12 +127,48 @@ canvas {
 }
 
 #newsPanel  {
-    background-color: lightcoral;
+    flex: 1;
+    margin-left: 20px;
+}
+#newsPanelHistory {
+    display: flex;
+    overflow-y: scroll;
+    flex-direction: column;
 }
 
 
 
 #tradingGraphPanel {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+#tradingGraphPanel{
+    display: flex;
+    flex-direction: column;
+}
+#tradingGraphPanel div{
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+
+#tradingGraphPanel div div{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+#tradingGraphPanel div div div {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+
+#tradingGraphPanel div div div div{
+    text-align: center;
+    width: 100px;
+    height: 200px;
+    margin: 10px;
     display: flex;
     flex-direction: column;
     flex: 1;

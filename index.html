@@ -7,45 +7,77 @@
     <script src="js.js" defer></script>
     <link href="style.css" rel="stylesheet">
 </head>
-<body>
+<body >
 
     <div id="tradingGraphAndNewsDiv">
         <div id="tradingGraphPanel">
             <div>
                 <div>
-                    <p>Lockhead Cooperation</p>
-                    <canvas id="canvas1" height="200px" width="400px"></canvas>
+                    <p>------------Lockhead Cooperation [LK]</p>
+                    <div class="tradingGraphContainer">
+                        <div>
+                            <p>sp:</p>
+                            <p id="can1StartPrice" >start</p>
+                            <p>ep:</p>
+                            <p id="can1EndPrice" >end</p>
+                            <p>change:</p>
+                            <p id="can1Percentage" >%</p>
+                        </div>
+                        <canvas id="canvas1" height="200px" width="400px"></canvas>
+                    </div>
                 </div>
                 <div>
-                    <p>JSC Sukhoi Company (Сухой)</p>
-                    <canvas id="canvas2" height="200px" width="400px"></canvas>
+                    <p>Сухой [SU]</p>
+                    <div class="tradingGraphContainer">
+                        <div>
+                            <p id="can2StartPrice" >start</p>
+                            <p id="can2EndPrice" >end</p>
+                            <p id="can2Percentage" >%</p>
+                        </div>
+                        <canvas id="canvas2" height="200px" width="400px"></canvas>
+                    </div>
                 </div>
             </div>
             <div>
                 <div>
-                    <p>General Dynamics</p>
-                    <canvas id="canvas3" height="200px" width="400px"></canvas>
+                    <p>General Dynamics [GD]</p>
+                    <div class="tradingGraphContainer">
+                        <div>
+                            <p id="can3StartPrice" >start</p>
+                            <p id="can3EndPrice" >end</p>
+                            <p id="can3Percentage" >%</p>
+                        </div>
+                        <canvas id="canvas3" height="200px" width="400px"></canvas>
+                    </div>
                 </div>
                 <div>
-                    <p>Izhevsk Machinebuilding Plant</p>
-                    <canvas id="canvas4" height="200px" width="400px"></canvas>
-                </div>
+                    <p>ИЖМЕХ [IMP]</p>
+                    <div class="tradingGraphContainer">
+                        <div>
+                            <p id="can4StartPrice" >start</p>
+                            <p id="can4EndPrice" >end</p>
+                            <p id="can4Percentage" >%</p>
+                        </div>
+                        <canvas id="canvas4" height="200px" width="400px"></canvas>
+                    </div>
+                </div>                
             </div>
         </div>
         <div id="newsPanel">
             <h1>News</h1>
             <div id="newsPanelHistory">
-                <h1 id="newsHeadline"></h1>
             </div>
         </div>
     </div>
-
+ 
     
     <div id="terminalAndAboutDiv">
         <div id="terminalPanel">
             <div>
-                <label>user@khanja:~$ </label>
+
+                <label>user@СПУТНИК:~$ </label>
                 <input type="text" id="terminalInput"></input>
+                
             </div>
             <div id="commandHistory">
             </div>
@@ -53,8 +85,9 @@
         <div id="aboutPanel">
             <h1>By Yazan Abu Queider</h1>
             <h1 id="dayCounter"></h1>
+            <h1 id="userCredits">userCredits</h1>
         </div>
     </div>
-
+    <div class="fuzzy-overlay"></div>
 </body>
 </html>
