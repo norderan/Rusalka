@@ -8,86 +8,111 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body >
-
+    <div id="header">
+        <h1 id="logo">RUSALKA</h1>
+        <a id="name" href="https://github.com/users/norderan">By Norderan</a>
+    </div>
     <div id="tradingGraphAndNewsDiv">
         <div id="tradingGraphPanel">
-            <div>
-                <div>
-                    <p>------------Lockhead Cooperation [LK]</p>
+            <div class="twoGraphs">
+                <div class="graphWithThings">
                     <div class="tradingGraphContainer">
-                        <div>
+                        <div class="graphNumbers">
                             <p>sp:</p>
-                            <p id="can1StartPrice" >start</p>
+                            <p id="can1StartPrice" class="invertedColor">start</p>
                             <p>ep:</p>
-                            <p id="can1EndPrice" >end</p>
+                            <p id="can1EndPrice" class="invertedColor">end</p>
                             <p>change:</p>
-                            <p id="can1Percentage" >%</p>
+                            <p id="can1Percentage" class="invertedColor">%</p>
                         </div>
-                        <canvas id="canvas1" height="200px" width="400px"></canvas>
+                        <div class="companyNameAndgraph">
+                            <p>Lockhead Cooperation [LK]</p>
+                            <canvas id="canvas1" height="200px" width="400px"></canvas>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <p>Сухой [SU]</p>
+                <div class="graphWithThings">
                     <div class="tradingGraphContainer">
-                        <div>
-                            <p id="can2StartPrice" >start</p>
-                            <p id="can2EndPrice" >end</p>
-                            <p id="can2Percentage" >%</p>
+                        <div class="graphNumbers">
+                            <p>sp:</p>
+                            <p id="can2StartPrice" class="invertedColor">start</p>
+                            <p>ep:</p>
+                            <p id="can2EndPrice" class="invertedColor" >end</p>
+                            <p>change:</p>
+                            <p id="can2Percentage" class="invertedColor">%</p>
                         </div>
+                        <div class="companyNameAndgraph">
+                        <p>Сухой [SU]</p>
                         <canvas id="canvas2" height="200px" width="400px"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div>
-                <div>
-                    <p>General Dynamics [GD]</p>
+
+            <div class="twoGraphs">
+                <div class="graphWithThings">
                     <div class="tradingGraphContainer">
-                        <div>
-                            <p id="can3StartPrice" >start</p>
-                            <p id="can3EndPrice" >end</p>
-                            <p id="can3Percentage" >%</p>
+                        <div class="graphNumbers">
+                            <p>sp:</p>
+                            <p id="can3StartPrice" class="invertedColor">start</p>
+                            <p>ep:</p>
+                            <p id="can3EndPrice" class="invertedColor">end</p>
+                            <p>change:</p>
+                            <p id="can3Percentage" class="invertedColor">%</p>
                         </div>
-                        <canvas id="canvas3" height="200px" width="400px"></canvas>
+                        <div class="companyNameAndgraph">
+                            <p>General Dynamics [GD]</p>
+                            <canvas id="canvas3" height="200px" width="400px"></canvas>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <p>ИЖМЕХ [IMP]</p>
+                <div class="graphWithThings">
                     <div class="tradingGraphContainer">
-                        <div>
-                            <p id="can4StartPrice" >start</p>
-                            <p id="can4EndPrice" >end</p>
-                            <p id="can4Percentage" >%</p>
+                        <div class="graphNumbers">
+                            <p>sp:</p>
+                            <p id="can4StartPrice" class="invertedColor">start</p>
+                            <p>ep:</p>
+                            <p id="can4EndPrice" class="invertedColor">end</p>
+                            <p>change:</p>
+                            <p id="can4Percentage" class="invertedColor">%</p>
                         </div>
-                        <canvas id="canvas4" height="200px" width="400px"></canvas>
+                        <div class="companyNameAndgraph">
+                            <p>ИЖМЕХ [IMP]</p>
+                            <canvas id="canvas4" height="200px" width="400px"></canvas>
+                        </div>
                     </div>
                 </div>                
             </div>
         </div>
-        <div id="newsPanel">
-            <h1>News</h1>
-            <div id="newsPanelHistory">
+            <div id="newsPanel">
+                <h1 class="invertedColor">News</h1>
+                <div id="newsPanelHistory">
+                </div>
             </div>
-        </div>
     </div>
  
     
     <div id="terminalAndAboutDiv">
         <div id="terminalPanel">
-            <div>
+            <div id="commandHistory">
+            </div>
 
+            <div id="textInput">
                 <label>user@СПУТНИК:~$ </label>
                 <input type="text" id="terminalInput"></input>
-                
-            </div>
-            <div id="commandHistory">
             </div>
         </div>
         <div id="aboutPanel">
-            <h1>By Yazan Abu Queider</h1>
-            <h1 id="dayCounter"></h1>
-            <h1 id="userCredits">userCredits</h1>
+            <h1 class="invertedColor" >Infomation</h1>
+            <div id="creditsAndDays">
+                <h1 id="userCredits"></h1>
+                <h1 id="dayCounter"></h1>
+            </div>
+
         </div>
     </div>
+
+
     <div class="fuzzy-overlay"></div>
 </body>
 </html>

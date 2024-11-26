@@ -2,7 +2,7 @@
 
 /*
 LAST THING WORKED ON:
-    - trying to get the div div div situation right.
+    - getting the terminal input not to go down.
 */
 
 const HIGH_2 = 0.65;
@@ -15,32 +15,78 @@ const LOW_2 = 0.35;
 
 
 const newsArray = [
-    //day zero
     {
-        news: "Lockheed Corporation announced the development of high altitude reconnaissance aircraft Lockheed U-2.",
-        can1Trend: HIGH_1,
+        news: "Day 1: Lockheed Cooperation receives substantial funding from the US government to develop the U-2 reconnaissance aircraft. Sukhoi engineers hint at a groundbreaking new jet in development.",
+        can1Trend: HIGH_2,
         can2Trend: ZERO,
-        can3Trend: ZERO,
-        can4Trend: LOW,
+        can3Trend: HIGH,
+        can4Trend: ZERO,
     },
-
     {
-        news: "Test flight of the Lockheed U-2 prototype failed and crushed into the ocean. General Dynamics CEO commented: \"Duo to The U-2 failer we are stopping all collaboration with The Lockheed cooperation.\".",
-        can1Trend: LOW_2,
-        can2Trend: LOW,
+        news: "Day 2: General Dynamics announces a significant contract with NATO for advanced tank production. Izhevsk Mechanical Plant completes a major shipment of AK-74 rifles.",
+        can1Trend: ZERO,
+        can2Trend: ZERO,
+        can3Trend: HIGH_2,
+        can4Trend: HIGH_1,
+    },
+    {
+        news: "Day 3: Sukhoi confirms the Su-27 fighter jet project is progressing, gaining international attention. However, the Lockheed U-2 project reports minor delays due to technical challenges.",
+        can1Trend: LOW,
+        can2Trend: HIGH_1,
         can3Trend: ZERO,
         can4Trend: ZERO,
     },
-
     {
-        news: "Joseph Stalin, leader of the USSR, has orderd the manufacturing of 10,000 more UZ-10 anti-aircrafts from the Izhevsk Mechanical Plant",
+        news: "Day 4: General Dynamics faces criticism after reports of cost overruns in their tank production project. Meanwhile, Lockheed reassures investors the U-2 project will remain on schedule despite earlier delays.",
+        can1Trend: HIGH,
+        can2Trend: ZERO,
+        can3Trend: LOW_1,
+        can4Trend: ZERO,
+    },
+    {
+        news: "Day 5: The Lockheed U-2 prototype suffers a catastrophic failure during a test flight, crashing into the ocean. Sukhoi announces successful preliminary tests of the Su-27.",
+        can1Trend: LOW_2,
+        can2Trend: HIGH_2,
+        can3Trend: ZERO,
+        can4Trend: ZERO,
+    },
+    {
+        news: "Day 6: Izhevsk Mechanical Plant faces criticism for quality control issues in their latest batch of rifles, delaying exports. General Dynamics announces a new, lighter tank design to counter the backlash from cost overruns.",
         can1Trend: ZERO,
         can2Trend: ZERO,
+        can3Trend: HIGH_1,
+        can4Trend: LOW_1,
+    },
+    {
+        news: "Day 7: Lockheed confirms plans for a second U-2 prototype after the crash, boosting confidence. Sukhoi reports a breakthrough in the Su-27’s aerodynamics, reducing production costs.",
+        can1Trend: HIGH_1,
+        can2Trend: HIGH_2,
         can3Trend: ZERO,
+        can4Trend: ZERO,
+    },
+    {
+        news: "Day 8: General Dynamics CEO resigns amid corruption allegations, causing a temporary halt to several projects. Izhevsk Mechanical Plant announces improved rifle designs to address prior complaints.",
+        can1Trend: ZERO,
+        can2Trend: ZERO,
+        can3Trend: LOW_2,
         can4Trend: HIGH_1,
     },
+    {
+        news: "Day 9: Lockheed U-2’s second prototype completes a successful test flight, restoring credibility to the project. Sukhoi begins full-scale production of the Su-27, attracting international interest.",
+        can1Trend: HIGH_2,
+        can2Trend: HIGH_1,
+        can3Trend: ZERO,
+        can4Trend: ZERO,
+    },
+    {
+        news: "Day 10: Izhevsk Mechanical Plant lands a historic deal to supply rifles to Middle Eastern allies. General Dynamics announces a comeback with a revolutionary new tank prototype.",
+        can1Trend: ZERO,
+        can2Trend: ZERO,
+        can3Trend: HIGH_2,
+        can4Trend: HIGH_2,
+    },
+];
 
-]
         
     
 
@@ -122,15 +168,15 @@ function dayLoop() {
     userCreditsH1.textContent = "Credits: " + userCredits;
 
     //clear end price
-    can1EndPrice.textContent = "-";
-    can2EndPrice.textContent = "-";
-    can3EndPrice.textContent = "-";
-    can4EndPrice.textContent = "-";
+    can1EndPrice.textContent = "?????";
+    can2EndPrice.textContent = "?????";
+    can3EndPrice.textContent = "?????";
+    can4EndPrice.textContent = "?????";
 
-    can1Percentage.textContent = "-";
-    can2Percentage.textContent = "-";
-    can3Percentage.textContent = "-";
-    can4Percentage.textContent = "-";
+    can1Percentage.textContent = "?????";
+    can2Percentage.textContent = "?????";
+    can3Percentage.textContent = "?????";
+    can4Percentage.textContent = "?????";
 
     //here is the day loop
     dayCounterElement.textContent = "Day " + (dayCounter + 1);
@@ -293,10 +339,12 @@ function terminalInterpreter(commandString) {
             userCredits = userCredits + profit;
             userCreditsH1.textContent = "Credits: " + userCredits;
 
-            can1Percentage.textContent = "%" + ((calculateNewPrice(stockArrayCoords1, priceCanvas1) - priceCanvas1) / priceCanvas1 * 100).toFixed(1);
-            can2Percentage.textContent = "%" + ((calculateNewPrice(stockArrayCoords2, priceCanvas2) - priceCanvas2) / priceCanvas2 * 100).toFixed(1);
-            can3Percentage.textContent = "%" + ((calculateNewPrice(stockArrayCoords3, priceCanvas3) - priceCanvas3) / priceCanvas3 * 100).toFixed(1);
-            can4Percentage.textContent = "%" + ((calculateNewPrice(stockArrayCoords4, priceCanvas4) - priceCanvas4) / priceCanvas4 * 100).toFixed(1);
+
+            
+            can1Percentage.textContent = formatPercentage(stockArrayCoords1, priceCanvas1);
+            can2Percentage.textContent = formatPercentage(stockArrayCoords2, priceCanvas2);
+            can3Percentage.textContent = formatPercentage(stockArrayCoords3, priceCanvas3);
+            can4Percentage.textContent = formatPercentage(stockArrayCoords4, priceCanvas4);
             
             
             priceCanvas1 = calculateNewPrice(stockArrayCoords1, priceCanvas1);
@@ -323,11 +371,35 @@ function terminalInterpreter(commandString) {
     } else if (commandArray[0] == "c") {
         dayCounter++;
         dayLoop();
-    } else {
-        addMessageToTerminal("[-] Invalid command.")
+    } else if (commandArray[0] == "help") {
+        if (commandArray[1] == "trade"){
+            addMessageToTerminal("[*] trade:");
+            addMessageToTerminal("[*] Syntax: trade [company symbol] [long/short] [amount] [flag(optional).");
+            addMessageToTerminal("[*] use -sl [amount] for stoploss and -tp [amount] for take profit.")
+        } else if(commandArray[1] == undefined){
+            addMessageToTerminal("[*] Commands: ");
+            addMessageToTerminal("[*] trade - Inter a trade. Enter \"help trade\" for more info about the command.");
+            //addMessageToTerminal("[*] store - Inter the store.");
+            addMessageToTerminal("[*] ???? - ?????????");
+    
+    
+        }
+
+
     }
+    else {
+        addMessageToTerminal("[-] Invalid command.");
+    } 
 }
 
+
+function formatPercentage (stockArrayCoords, priceCanvas){
+    let percentage = ((calculateNewPrice(stockArrayCoords, priceCanvas) - priceCanvas) / priceCanvas * 100).toFixed(1);
+    if(percentage >= 0){
+        percentage = "+" + percentage; 
+    }
+    return percentage + "%";
+}
 
 // calculates the trade profits.
 function trade(stockArray, long, amount, stopLoss, takeProfit, price) {

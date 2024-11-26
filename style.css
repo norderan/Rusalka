@@ -16,6 +16,7 @@ p {
     
 }
 * {
+
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -27,19 +28,17 @@ p {
 }
 
 html, body {
-    position: fixed;
     height: 100%;
     margin: 0;
     padding: 0;
 }
 
 body {
-
+    position: relative;
+    z-index: 5;
     display: flex;
     flex-direction: column;
     align-content: flex-end;
-    padding: 10px;
-    position: relative;
     overflow: hidden;
 
 }
@@ -86,17 +85,25 @@ canvas {
 #tradingGraphAndNewsDiv {
     display: flex;
     flex-direction: row;
+    z-index: 5;
+    padding-left: 10px;
+    padding-right: 10px;
+    flex: 1;
+
 }
 
 #terminalAndAboutDiv {
     display: flex;
     flex-direction: row;
+    justify-content: center;
     flex: 1;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 /* panels */
 #terminalPanel {
     display: flex;
-    flex: 1;
+    flex: 1.2;
     flex-direction: column-reverse;
 }
 
@@ -108,6 +115,7 @@ canvas {
     border: none;
     margin-right: 5px;
     margin-left: 5px;
+
 }
 
 input:focus {
@@ -116,61 +124,143 @@ input:focus {
     font-size: 20px;
 }
 
+#textInput {
+    display: flex;
+    
+}
 
-#terminalPanel div {
-    display: flex;
-}
 #commandHistory {
-    display: flex;
-    overflow-y: scroll;
-    flex-direction: column;
+    position: absolute;
+    flex-direction: column-reverse;
+    margin-bottom: 25px;
 }
+
 
 #newsPanel  {
     flex: 1;
     margin-left: 20px;
+    z-index: 5;
+
 }
 #newsPanelHistory {
+    position: absolute;
     display: flex;
-    overflow-y: scroll;
-    flex-direction: column;
+    flex-direction: column-reverse;
 }
 
 
 
 #tradingGraphPanel {
+    border: 2px solid transparent;
     display: flex;
     flex-direction: column;
     flex: 1;
 }
+
+
+@keyframes flashBorder {
+    0% {
+        border-color: transparent;
+    }
+    50% {
+        border-color: transparent;
+    }
+    51% {
+        border-color: orangered; 
+    }
+    99% {
+        border-color: orangered; 
+    }
+    100% {
+        border-color: transparent;
+    }
+}
+    /* animation: flashBorder 0.5s infinite;*/
+
+
+
 #tradingGraphPanel{
     display: flex;
     flex-direction: column;
 }
-#tradingGraphPanel div{
+.twoGraphs{
     display: flex;
     flex-direction: row;
     flex: 1;
 }
 
-#tradingGraphPanel div div{
+.graphWithThings{
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+.tradingGraphContainer {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+
+.companyNameAndgraph {
+    display: flex;
+    flex-direction: column;
+}
+
+.companyNameAndgraph p {
+    margin-left: 10px;
+}
+.graphNumbers {
     display: flex;
     flex-direction: column;
     flex: 1;
-}
-#tradingGraphPanel div div div {
-    display: flex;
-    flex-direction: row;
-    flex: 1;
-}
-
-#tradingGraphPanel div div div div{
     text-align: center;
     width: 100px;
     height: 200px;
     margin: 10px;
+    padding-top: 20px;
+}
+.invertedColor {
+    background-color: orangered;
+    color: black;
+    text-shadow: 0 0 2px black;
+
+}
+
+#aboutPanel {
     display: flex;
     flex-direction: column;
     flex: 1;
+    z-index: 5;
+    
+}
+
+#creditsAndDays {
+    border: 2px solid;
+    animation: flashBorder 0.7s infinite;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 50px;
+    flex: 1;
+}
+
+#logo{
+ z-index: 5;
+}
+
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    z-index: 5;
+}
+
+#name {
+    font-size: 15px;
+    
+    
 }
 
