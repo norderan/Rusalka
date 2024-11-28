@@ -1,10 +1,24 @@
 
 
 /*
-LAST THING WORKED ON:
-    - getting the terminal input not to go down.
-*/
+TODO:
+    == For version 1:
+    - graph: 
+        - get price lines on graphs V
+        - get better -sp and tp V
+    - function to delete trades
+    - Deployment:
+        - Add logo
+        - find domain and hosting.
 
+    == In the next episode:
+    - Add margin option
+    - Add story and ending
+
+ 
+
+*/
+const MAIN_COLOR = "#ff3c00";
 const HIGH_2 = 0.65;
 const HIGH_1 = 0.6;
 const HIGH = 0.55;
@@ -128,18 +142,21 @@ const CANVAS_WIDTH = 400;
 
 const newsPanelHistory = document.getElementById("newsPanelHistory");
 const terminalInputElement = document.getElementById("terminalInput");
+const commandHistory = document.getElementById("commandHistory");
 
 
 
 let news;
 let priceCanvas1 = 1000;
-let priceCanvas2 = 700;
+let priceCanvas2 = 100;
 let priceCanvas3 = 800;
-let priceCanvas4 = 500;
+let priceCanvas4 = 100;
 
 let userCredits = 1000;
 let command;
-
+let trades = []; 
+let maxCredits = userCredits;
+let tradedFlag = false;
 
 
 let stockArrayCoords1;
@@ -152,6 +169,12 @@ let stockArrayDraw2;
 let stockArrayDraw3;
 let stockArrayDraw4;
 
+addMessageToTerminal("[СИС] As we agreed, you have been granted access to a Rusalka,");
+addMessageToTerminal("a secret soviet stock trading terminal.");
+addMessageToTerminal("[СИС] You have been given 1000 credits to which are connected");
+addMessageToTerminal("to the bank account we agreed on. Use them wisely.")
+addMessageToTerminal("[СИС] Start by typing \"help\" to get a list of all commands.");
+addMessageToTerminal("[СИС] The terminal is ready for your commands.");
 
 dayLoop();
 
@@ -166,7 +189,9 @@ function dayLoop() {
     ctxCanvas3.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     ctxCanvas4.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
     userCreditsH1.textContent = "Credits: " + userCredits;
-
+    //clear animation
+    //userCreditsH1.classList.remove("flashBorder1");
+    //dayCounterElement.classList.add("flashBorder1");
     //clear end price
     can1EndPrice.textContent = "?????";
     can2EndPrice.textContent = "?????";
@@ -177,7 +202,10 @@ function dayLoop() {
     can2Percentage.textContent = "?????";
     can3Percentage.textContent = "?????";
     can4Percentage.textContent = "?????";
-
+    // clear other varaibles:
+    maxCredits = userCredits;
+    tradedFlag = false;
+    trades = [];
     //here is the day loop
     dayCounterElement.textContent = "Day " + (dayCounter + 1);
     const dayObj = newsArray[dayCounter];
@@ -195,8 +223,13 @@ function dayLoop() {
     stockArrayDraw3 = stockArrayCoords3.map(element => CANVAS_HEIGHT - Number(((element * 1000) - 900).toFixed(1)));;
     stockArrayDraw4 = stockArrayCoords4.map(element => CANVAS_HEIGHT - Number(((element * 1000) - 900).toFixed(1)));;
 
-
     
+    drawThe500lines(stockArrayCoords1, priceCanvas1, ctxCanvas1);
+    drawThe500lines(stockArrayCoords2, priceCanvas2, ctxCanvas2);
+    drawThe500lines(stockArrayCoords3, priceCanvas3, ctxCanvas3);
+    drawThe500lines(stockArrayCoords4, priceCanvas4, ctxCanvas4);
+    
+
     drawStock(stockArrayDraw1, true, ctxCanvas1);
     drawStock(stockArrayDraw2, true, ctxCanvas2); 
     drawStock(stockArrayDraw3, true, ctxCanvas3); 
@@ -213,7 +246,7 @@ function dayLoop() {
 //terminal input:
 terminalInputElement.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-        addMessageToTerminal(terminalInputElement.value)
+        //addMessageToTerminal(terminalInputElement.value)
         terminalInterpreter(terminalInputElement.value);
         console.log('terminal command: ' + terminalInput);
         terminalInputElement.value = '';
@@ -234,7 +267,6 @@ function addNewsToNewsTerminal(message) {
 
 
 //Add news item to the news terminal
-const commandHistory = document.getElementById("commandHistory");
 function addMessageToTerminal(message) {
     let newCommand = document.createElement("p");
     newCommand.textContent = message;
@@ -244,11 +276,16 @@ function addMessageToTerminal(message) {
 }
 
 
-// trade LM long 500 -sl 1500 -tp 1700
 // Interpretes terminal commands
+
 function terminalInterpreter(commandString) {
     let commandArray = commandString.split(" ");
-    if (commandArray[0] == "trade") {
+
+    if (commandArray[0] == "trade" && commandArray[1] != "confirm") {
+        if(tradedFlag == true) {
+            addMessageToTerminal("[-] You are done trading for the day. Type \"c\"  to continue tomorrow.");
+            return;
+        }
         let priceCanvas;
         let ctxCanvas;
         let symbol = commandArray[1];
@@ -264,7 +301,7 @@ function terminalInterpreter(commandString) {
             addMessageToTerminal("[-] The trade symbol " + symbol + " is not valid.");
         } else if (!/^[0-9]+$/.test(amount)) {
             addMessageToTerminal("[-] Amount not valid.");
-        } else if (amount > userCredits) {
+        } else if (maxCredits - amount < 0) {
             addMessageToTerminal("[-] Not enough credits.");
         } else if (amount <= 0) {
             addMessageToTerminal("[-] Amount not valid.");
@@ -273,24 +310,92 @@ function terminalInterpreter(commandString) {
         } else if (commandArray[5] && !/^[0-9]+$/.test(commandArray[5]) || commandArray[7] && !/^[0-9]+$/.test(commandArray[7])) {
             addMessageToTerminal("[-] Stop loss or take profit amount are not valid.");
         } else {
+            trades.push(commandString);
+            maxCredits -= amount;
+            addMessageToTerminal("[+] Trade " + trades.length + " added: " + symbol + " " + longOrshort + " " + amount + ". " + "(" + maxCredits +")" + " credits left ot use.");
+            switch (symbol.toLowerCase()) {
+                case "lk":
+                    ctxCanvas = ctxCanvas1;
+                    priceCanvas = priceCanvas1;
+                    stockArrayCoords = stockArrayCoords1;
+                    break;
+                case "su":
+                    ctxCanvas = ctxCanvas2;
+                    priceCanvas = priceCanvas2;
+                    stockArrayCoords = stockArrayCoords2;
+                    break;
+                case "gd":
+                    ctxCanvas = ctxCanvas3;
+                    priceCanvas = priceCanvas3;
+                    stockArrayCoords = stockArrayCoords3;
+                    break;
+                case "imp":
+                    ctxCanvas = ctxCanvas4;
+                    priceCanvas = priceCanvas4;
+                    stockArrayCoords = stockArrayCoords4;
+                default:
+                    break;  
+            }
 
             for (let i = 4; i < commandArray.length; i++) {
                 if (commandArray[i] === "-sl" && commandArray[i + 1]) {
                     stopLoss = commandArray[i + 1];
-                    stopLossPixels = CANVAS_HEIGHT - (((stopLoss / priceCanvas1) * 1000) - 900);
+                    stopLossPixels = CANVAS_HEIGHT - (((stopLoss / priceCanvas) * 1000) - 900);
                 }
                 if (commandArray[i] === "-tp" && commandArray[i + 1]) {
                     takeProfit = commandArray[i + 1];
-                    takeProfitPixels = CANVAS_HEIGHT - (((takeProfit / priceCanvas1) * 1000) - 900);
+                    takeProfitPixels = CANVAS_HEIGHT - (((takeProfit / priceCanvas) * 1000) - 900);
                 }
-                }
-            
+            }
+            // draw stoploss line 
+            ctxCanvas.strokeStyle = "red";
+            ctxCanvas.lineWidth = 3;
+            ctxCanvas.beginPath();
+            ctxCanvas.moveTo(0, stopLossPixels);
+            ctxCanvas.lineTo(CANVAS_WIDTH, stopLossPixels);
+            ctxCanvas.stroke();
+
+            // draw take profit line 
+            ctxCanvas.strokeStyle = "green";
+            ctxCanvas.lineWidth = 3;
+            ctxCanvas.beginPath();
+            ctxCanvas.moveTo(0, takeProfitPixels);
+            ctxCanvas.lineTo(400, takeProfitPixels);
+            ctxCanvas.stroke();
+
+        }
+    } else if (commandArray[0] == "trade" && commandArray[1] == "confirm") {
+        if(tradedFlag == true) {
+            addMessageToTerminal("[-] You are done trading for the day. Type \"c\" to continue tomorrow.");
+            return;
+        }
+        //userCreditsH1.classList.add("flashBorder1");
+        tradedFlag = true;
+        userCredits = maxCredits;
+        addMessageToTerminal("[+] "+ trades.length + " trades confirmed.")
+        let counter = 0;
+        for (const tradeMap of trades) {
+            counter++;
+            let commandArray = tradeMap.split(" ");
+
+            let priceCanvas;
+            let ctxCanvas;
+            let symbol = commandArray[1];
+            let longOrshort = commandArray[2];
+            let amount = commandArray[3];
+            let isLong;
+            let stopLoss;
+            let takeProfit;
+            let stopLossPixels;
+            let takeProfitPixels;
+            let stockArrayCoords;
+
             if (longOrshort == "long") {
                 isLong = true;
             } else if (longOrshort == "short") {
                 isLong = false;
             }
-            
+                
             switch (symbol.toLowerCase()) {
                 case "lk":
                     ctxCanvas = ctxCanvas1;
@@ -315,30 +420,26 @@ function terminalInterpreter(commandString) {
 
                     break;
             }
-            // draw stoploss line 
-            ctxCanvas.strokeStyle = "red";
-            ctxCanvas.lineWidth = 3;
-            ctxCanvas.beginPath();
-            ctxCanvas.moveTo(0, stopLossPixels);
-            ctxCanvas.lineTo(CANVAS_WIDTH, stopLossPixels);
-            ctxCanvas.stroke();
-
-            // draw take profit line 
-            ctxCanvas.strokeStyle = "green";
-            ctxCanvas.lineWidth = 3;
-            ctxCanvas.beginPath();
-            ctxCanvas.moveTo(0, takeProfitPixels);
-            ctxCanvas.lineTo(400, takeProfitPixels);
-            ctxCanvas.stroke();
-
-            ctxCanvas.strokeStyle = "black";
-
+            for (let i = 4; i < commandArray.length; i++) {
+                if (commandArray[i] === "-sl" && commandArray[i + 1]) {
+                    stopLoss = commandArray[i + 1];
+                    stopLossPixels = CANVAS_HEIGHT - (((stopLoss / priceCanvas) * 1000) - 900);
+                }
+                if (commandArray[i] === "-tp" && commandArray[i + 1]) {
+                    takeProfit = commandArray[i + 1];
+                    takeProfitPixels = CANVAS_HEIGHT - (((takeProfit / priceCanvas) * 1000) - 900);
+                }
+            }
+            
 
 
             profit = trade(stockArrayCoords, isLong, amount, stopLoss, takeProfit, priceCanvas);
             userCredits = userCredits + profit;
-            userCreditsH1.textContent = "Credits: " + userCredits;
-
+            if(profit - amount >= 0) {
+                addMessageToTerminal("[++] Trade " + counter + " Profited "+ (profit - amount) +" on " + symbol + ".");
+            } else {
+                addMessageToTerminal("[+-] Trade " + counter + " lost "+ (amount - profit) +" on " + symbol + ".");
+            }
 
             
             can1Percentage.textContent = formatPercentage(stockArrayCoords1, priceCanvas1);
@@ -357,28 +458,38 @@ function terminalInterpreter(commandString) {
             can3EndPrice.textContent = priceCanvas3;
             can4EndPrice.textContent = priceCanvas4;
 
-            drawStock(stockArrayDraw1, false, ctxCanvas1);
-            drawStock(stockArrayDraw2, false, ctxCanvas2); 
-            drawStock(stockArrayDraw3, false, ctxCanvas3); 
-            drawStock(stockArrayDraw4, false, ctxCanvas4); 
+
 
             console.log("user credits: " + userCredits);
             console.log("canvas price: " + priceCanvas1);
-            console.log("==================================");
-
+            console.log("==================================");   
         }
+        
+        drawStock(stockArrayDraw1, false, ctxCanvas1);
+        drawStock(stockArrayDraw2, false, ctxCanvas2); 
+        drawStock(stockArrayDraw3, false, ctxCanvas3); 
+        drawStock(stockArrayDraw4, false, ctxCanvas4); 
+        userCreditsH1.textContent = "Credits: " + userCredits;
 
     } else if (commandArray[0] == "c") {
+        addMessageToTerminal("[+] Continued to next day.")
+        addMessageToTerminal("")
+        //dayCounterElement.classList.remove("flashBorder1");
         dayCounter++;
         dayLoop();
     } else if (commandArray[0] == "help") {
         if (commandArray[1] == "trade"){
             addMessageToTerminal("[*] trade:");
-            addMessageToTerminal("[*] Syntax: trade [company symbol] [long/short] [amount] [flag(optional).");
+            addMessageToTerminal("[*] Syntax: trade [company symbol] [long/short] [amount] [flag(optional)].");
             addMessageToTerminal("[*] use -sl [amount] for stoploss and -tp [amount] for take profit.")
+            
         } else if(commandArray[1] == undefined){
             addMessageToTerminal("[*] Commands: ");
+            addMessageToTerminal("[*] help - List all commands.");
             addMessageToTerminal("[*] trade - Inter a trade. Enter \"help trade\" for more info about the command.");
+            addMessageToTerminal("[*] trade confirm - Confirm the trades.");
+            addMessageToTerminal("[*] c - Continue to the next day.");
+
             //addMessageToTerminal("[*] store - Inter the store.");
             addMessageToTerminal("[*] ???? - ?????????");
     
@@ -386,8 +497,7 @@ function terminalInterpreter(commandString) {
         }
 
 
-    }
-    else {
+    }else {
         addMessageToTerminal("[-] Invalid command.");
     } 
 }
@@ -405,7 +515,6 @@ function formatPercentage (stockArrayCoords, priceCanvas){
 function trade(stockArray, long, amount, stopLoss, takeProfit, price) {
     let profit;
     let percentage
-    userCredits = userCredits - amount;
 
     if(long) {
         if (takeProfit === undefined && stopLoss === undefined) {
@@ -526,6 +635,7 @@ function createStockArray(trend, volatility) {
         let lastPrice = coordinatesArray[i - 1];
         coordinatesArray[i] = Number((lastPrice * priceChange).toFixed(4));
     }
+    //console.log(coordinatesArray);
     return coordinatesArray;
 }
 
@@ -533,18 +643,21 @@ function createStockArray(trend, volatility) {
 function calculateNewPrice(stockArray, lastPrice) {
     return Math.ceil(lastPrice * (stockArray[STOCK_TIPS] / stockArray[STOCK_START_VIEW_INDEX]) * 10) / 10;
 }
-function drawThe500lines(stockArray, price) {
-
-    for (let i = 0; i < 3000; i += 10) {
-        stopLossPixels = 200 - Math.round(stockArray1[25].y * ((((i / priceCanvas1) - 1) / PRECENTAGE_DIVIDOR_FACTOR) + 1));
-        ctx.strokeStyle = "grey";
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(0, 200 - stopLossPixels); // Starting point (x, y)
-        ctx.lineTo(400, 200 - stopLossPixels); // Ending point (x, y)
-        ctx.stroke();
-        ctx.strokeStyle = "black";
+function drawThe500lines(stockArray, price, ctx) {
+    let lines = [];
+    ctx.strokeStyle = MAIN_COLOR;
+    ctx.lineWidth = 2;
+    
+    for(let i = 0.9; i <= 1.1; i += 0.02) {
+    pixel = CANVAS_HEIGHT - Number(((i * 1000) - 900).toFixed(1));
+    ctx.beginPath();
+    ctx.moveTo(0, CANVAS_HEIGHT - pixel); // Starting point (x, y)
+    ctx.lineTo(CANVAS_WIDTH, CANVAS_HEIGHT - pixel); // Ending point (x, y)
+    ctx.stroke();
     }
+
+    ctx.strokeStyle = MAIN_COLOR;
+    console.log("pixel: " + pixel);
 
 }
 
@@ -557,7 +670,7 @@ function drawStock(coordinatesArray, isHalf, ctx) {
     let gapCounter = 0
     if (isHalf) {
         startingPixel = 0;
-        ctx.strokeStyle = "orangered";
+        ctx.strokeStyle = MAIN_COLOR;
         ctx.lineWidth = 3;
         ctx.beginPath();
         ctx.moveTo(CANVAS_WIDTH / STOCK_START_VIEW_INDEX, 0); // Starting point (x, y)
@@ -572,7 +685,7 @@ function drawStock(coordinatesArray, isHalf, ctx) {
         gapCounter = gap * STOCK_START_VIEW_INDEX;
     }
 
-    ctx.strokeStyle = "orangered";
+    ctx.strokeStyle = MAIN_COLOR;
     ctx.beginPath();
     ctx.moveTo(startingPixel, coordinatesArray[startingIndex]);
 
@@ -588,6 +701,4 @@ function drawStock(coordinatesArray, isHalf, ctx) {
         }, delay * i);
     }
 
-
 }
-
