@@ -87,6 +87,8 @@ body {
 canvas {
     border-style: solid;
     margin: 10px;
+    box-shadow: 0 0 10px var(--main-color);
+
 }
 
 #tradingGraphAndNewsDiv {
@@ -243,7 +245,8 @@ input:focus {
     background-color: var(--main-color);
     color: var(--background-color);
     text-shadow: 0 0 2px var(--background-color);
-
+    box-shadow: 0 0 10px var(--main-color);
+    z-index: 6;
 }
 
 #aboutPanel {

@@ -647,7 +647,8 @@ function drawThe500lines(stockArray, price, ctx) {
     let lines = [];
     ctx.strokeStyle = MAIN_COLOR;
     ctx.lineWidth = 2;
-    
+    ctx.shadowColor = MAIN_COLOR; // Glow color
+    ctx.shadowBlur = 20; // Glow intensity
     for(let i = 0.9; i <= 1.1; i += 0.02) {
     pixel = CANVAS_HEIGHT - Number(((i * 1000) - 900).toFixed(1));
     ctx.beginPath();
@@ -668,8 +669,10 @@ function drawStock(coordinatesArray, isHalf, ctx) {
     let endingIndex;
     let gap = CANVAS_WIDTH / STOCK_TIPS;
     let gapCounter = 0
+    ctx.shadowBlur = 0;
     if (isHalf) {
         startingPixel = 0;
+
         ctx.strokeStyle = MAIN_COLOR;
         ctx.lineWidth = 3;
         ctx.beginPath();
@@ -684,7 +687,6 @@ function drawStock(coordinatesArray, isHalf, ctx) {
         startingPixel = CANVAS_WIDTH / STOCK_START_VIEW_INDEX;
         gapCounter = gap * STOCK_START_VIEW_INDEX;
     }
-
     ctx.strokeStyle = MAIN_COLOR;
     ctx.beginPath();
     ctx.moveTo(startingPixel, coordinatesArray[startingIndex]);
@@ -700,5 +702,6 @@ function drawStock(coordinatesArray, isHalf, ctx) {
             gapCounter += gap;
         }, delay * i);
     }
+
 
 }
